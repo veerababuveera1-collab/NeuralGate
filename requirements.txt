@@ -1,0 +1,17 @@
+# UI Framework
+streamlit
+
+# NLP Libraries
+nltk
+scikit-learn
+
+# Data Handling
+pandas
+numpy
+
+# Model Deployment
+joblib
+pickle-mixin
+
+# Visuals & Graphics
+Pillow
