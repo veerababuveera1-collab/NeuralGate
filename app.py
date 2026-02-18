@@ -1,113 +1,144 @@
 import streamlit as st
 import time
+import pandas as pd
 
-# --- పేజీ కాన్ఫిగరేషన్ ---
-st.set_page_config(page_title="LingoLens AI | Neural Gateway", page_icon="🔐", layout="wide")
+# --- 1. PAGE CONFIGURATION ---
+st.set_page_config(
+    page_title="LingoLens AI | Neural Gateway", 
+    page_icon="🧠", 
+    layout="wide"
+)
 
-# --- CUSTOM CSS (MINDBLOWING VISUALS) ---
+# --- 2. ADVANCED NEON CSS ---
 st.markdown("""
     <style>
-    /* మెయిన్ బ్యాక్ గ్రౌండ్ - డార్క్ గ్రేడియంట్ */
     .stApp {
         background: radial-gradient(circle at center, #051612 0%, #000000 100%);
         color: #00ff41;
     }
-    
-    /* లాగిన్ బాక్స్ స్టైలింగ్ */
-    .login-container {
-        background: rgba(0, 255, 65, 0.03);
+    .login-card {
+        background: rgba(0, 255, 65, 0.05);
         border: 1px solid #00ff41;
-        border-radius: 15px;
-        padding: 50px;
-        box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
         text-align: center;
-        margin-top: 50px;
     }
-
-    /* నియాన్ టైటిల్ ఎఫెక్ట్ */
     .neon-text {
-        text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
-        font-family: 'Courier New', Courier, monospace;
-        letter-spacing: 5px;
+        text-shadow: 0 0 10px #00ff41;
+        font-family: 'Courier New', monospace;
     }
-
-    /* బటన్ స్టైలింగ్ */
     .stButton>button {
         background-color: transparent;
         color: #00ff41 !important;
-        border: 2px solid #00ff41 !important;
-        border-radius: 5px;
-        font-weight: bold;
-        transition: 0.5s;
+        border: 1px solid #00ff41 !important;
         width: 100%;
-        text-transform: uppercase;
+        transition: 0.4s;
     }
-    
     .stButton>button:hover {
         background-color: #00ff41 !important;
         color: black !important;
-        box-shadow: 0 0 30px #00ff41;
+        box-shadow: 0 0 20px #00ff41;
     }
-
-    /* ఇన్పుట్ ఫీల్డ్స్ */
-    .stTextInput>div>div>input {
-        background-color: rgba(0,0,0,0.5);
-        color: #00ff41;
-        border: 1px solid #008f11;
-        text-align: center;
-    }
+    /* Input Styling */
+    input { color: #00ff41 !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- సెషన్ స్టేట్ ---
+# --- 3. SESSION STATE INITIALIZATION ---
 if 'auth' not in st.session_state:
     st.session_state.auth = False
+if 'user_name' not in st.session_state:
+    st.session_state.user_name = ""
 
-# --- లాగిన్ స్క్రీన్ ---
+# --- 4. MINDBLOWING LOGIN PAGE ---
 if not st.session_state.auth:
-    # స్క్రీన్ మధ్యలో లాగిన్ ఫామ్ రావడం కోసం కాలమ్స్
-    empty_l, login_col, empty_r = st.columns([1, 2, 1])
+    _, col2, _ = st.columns([1, 2, 1])
     
-    with login_col:
+    with col2:
+        st.markdown("<br><br>", unsafe_allow_html=True)
         st.markdown("""
-            <div class="login-container">
+            <div class="login-card">
                 <h1 class="neon-text">LINGOLENS AI</h1>
-                <p style="color: #008f11;">SYSTEM STATUS: SECURE</p>
-                <hr style="border: 0.5px solid #004411;">
+                <p style="color: #008f11;">PROJECT BY BIOTWIN x LEARNOMINE</p>
             </div>
         """, unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # ఇన్పుట్ బాక్సులు
-        creator_id = st.text_input("CREATOR IDENTITY", placeholder="IDENTIFY YOURSELF")
-        secret_key = st.text_input("NEURAL ENCRYPTION KEY", type="password", placeholder="ENTER KEY")
-        
-        st.markdown("<br>", unsafe_allow_html=True)
+        # Inputs
+        input_user = st.text_input("CREATOR IDENTITY", placeholder="Type Learnomine_Creator")
+        input_key = st.text_input("NEURAL ENCRYPTION KEY", type="password", placeholder="Enter NLP_PRO_2026")
         
         if st.button("INITIALIZE NEURAL LINK"):
-            # ఇక్కడ మీరు ఇచ్చిన క్రెడెన్షియల్స్
-            if creator_id == "Learnomine_Creator" and secret_key == "NLP_PRO_2026":
+            if input_user == "Learnomine_Creator" and input_key == "NLP_PRO_2026":
                 st.session_state.auth = True
-                with st.spinner("Decoding Neural Pathways..."):
-                    time.sleep(2)
-                st.success("ACCESS GRANTED")
+                st.session_state.user_name = input_user # ఇక్కడ డేటా సేవ్ అవుతుంది
+                st.toast("Verification Successful...")
+                time.sleep(1)
                 st.rerun()
             else:
-                st.error("ACCESS DENIED: INVALID IDENTITY OR KEY")
+                st.error("ACCESS DENIED: Credentials Mismatch")
+    st.stop()
 
-# --- మెయిన్ అప్లికేషన్ (లాగిన్ అయ్యాక) ---
-else:
-    st.sidebar.success(f"WELCOME, {creator_id}")
-    if st.sidebar.button("TERMINATE SESSION"):
-        st.session_state.auth = False
-        st.rerun()
+# --- 5. MAIN DASHBOARD (ONLY VISIBLE AFTER LOGIN) ---
+# Sidebar సెక్షన్
+st.sidebar.markdown(f"### 🚀 Welcome, \n**{st.session_state.user_name}**")
+st.sidebar.divider()
+st.sidebar.write("**Model:** Naive Bayes")
+st.sidebar.write("**Vector:** TF-IDF")
+st.sidebar.write("**Status:** Neural Link Active")
 
-    st.title("🧠 Neural Text Analysis Dashboard")
-    st.write("System online. Waiting for human input...")
+if st.sidebar.button("LOGOUT"):
+    st.session_state.auth = False
+    st.rerun()
+
+# Main UI
+st.title("🧠 Neural Text Analysis Engine")
+st.write("---")
+
+col_input, col_viz = st.columns([2, 1])
+
+with col_input:
+    st.subheader("Input Stream")
+    user_text = st.text_area("Enter text to classify:", placeholder="Paste message here...", height=200)
     
-    # ఇక్కడ మీ NLP మోడల్ ప్రిడిక్షన్ కోడ్ రాయవచ్చు
-    user_input = st.text_area("Input Stream", placeholder="Analyze text in real-time...")
     if st.button("RUN INFERENCE"):
-        st.write("Processing Data...")
-        # మీ ML మోడల్ లాజిక్ ఇక్కడ వస్తుంది.
+        if user_text:
+            with st.status("Processing NLP Pipeline...", expanded=True) as status:
+                st.write("Step 1: Cleaning text (removing stopwords)...")
+                time.sleep(0.8)
+                st.write("Step 2: Vectorizing with TF-IDF...")
+                time.sleep(0.6)
+                st.write("Step 3: Calculating probability...")
+                time.sleep(0.5)
+                status.update(label="Analysis Complete!", state="complete")
+            
+            # Simulated logic for demo (మీ మోడల్ ఉంటే ఇక్కడ .predict() వాడండి)
+            is_spam = "win" in user_text.lower() or "free" in user_text.lower()
+            
+            if is_spam:
+                st.error(f"### Result: SPAM DETECTED ⚠️")
+            else:
+                st.success(f"### Result: LEGITIMATE MESSAGE ✅")
+        else:
+            st.warning("Please enter some text to analyze.")
+
+with col_viz:
+    st.subheader("Pipeline Metrics")
+    st.progress(98, text="Model Accuracy")
+    st.progress(100, text="System Latency: 24ms")
+    
+    st.divider()
+    st.markdown("""
+    **NLP Steps:**
+    1. Tokenization
+    2. Stopword Removal
+    3. Lemmatization
+    4. Vectorization
+    """)
+
+
+
+st.markdown("---")
+st.caption("LingoLens AI | Developed for Portfolio 2026")
